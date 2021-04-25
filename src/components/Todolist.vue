@@ -19,14 +19,10 @@
              <div class="row">
                   <todo-check-all></todo-check-all>
                 
-                 <div class="col-md-8">
+                 <div class="col-md-12">
                       <todo-filtered></todo-filtered>
                  </div>
-                 <div class="col-md-4 text-right">
-                      <transition name="fade">
-                        <todo-clear-completed></todo-clear-completed>
-                      </transition>
-                 </div>
+                 
                  <hr/>
                  <div class="col-md-12">
                     <p style="font-size:12px;color:red;margin-top:20px;">{{textform.description}}</p>
@@ -42,15 +38,13 @@
  import TodoItem from './TodoItem'
  import TodoCheckAll from './TodoCheckAll'
  import TodoFiltered from './TodoFiltered'
- import TodoClearCompleted from './TodoClearCompleted'
 
 export default {
     name : "todo-list",
     components:{
      TodoItem,
      TodoCheckAll,
-     TodoFiltered,
-     TodoClearCompleted,
+     TodoFiltered, 
     },
     data : function(){
         return{
@@ -58,32 +52,19 @@ export default {
             beforeEditCache:'',
             filter:'all',
             newTodo :'',
-            todos:[
-                {
-                    'id' : 1,
-                    'title':"Mail gönderilecek",
-                    'completed' : false,
-                    'editing' : false,
-                },
-                {
-                    'id' : 2,
-                    'title':"Proje oluşturulacak",
-                    'completed' : false,
-                    'editing' : false,
-                }
-            ],
             textform:{
                 title : "Yapılacak İş Listesi",
                 input : "Yapılacak işi ekleyiniz.",
                 description : "İşi düzenlemek için, ilgili işin üzerine çift tıklayınız.",
                 removeall : 'Seçilenleri Sil',
-                checkall : "Tümünü Seç"
+                checkall : "Tümünü yapıldığı olarak işaretle"
             }
         }
     },
     created(){ 
         eventBus.$on('removedTodo', (id)=>this.removeTodo(id))
         eventBus.$on('finishedEdit', (data)=>this.finishedEdit(data))
+        this.$store.dispatch('retrieveTodos')
     },
     computed: {
         remaining() {
@@ -104,15 +85,14 @@ export default {
             if (this.newTodo.trim().length == 0) {
                 return
             }
-            this.$store.state.todos.push({
+            this.$store.dispatch('addTodo', {
                 id: this.idForTodo,
                 title: this.newTodo,
-                completed: false,
             })
             this.newTodo = ''
             this.idForTodo++
         },
-        removeTodo(id) {
+        deleteTodo(id) {
             const index = this.$store.state.todos.findIndex((item) => item.id == id)
             this.$store.state.todos.splice(index, 1)
         },

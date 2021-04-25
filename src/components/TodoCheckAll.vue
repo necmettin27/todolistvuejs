@@ -1,5 +1,5 @@
 <template>
-  <div class="col-md-12"><label><input type="checkbox" :checked="!anyRemaining" @change="allChecked"> Tümünü Seç</label></div>
+  <div class="col-md-12"><label><input type="checkbox" :checked="!anyRemaining" @change="allChecked"> Tümünü yapıldığı olarak işaretle</label></div>
 </template>
 
 <script>
