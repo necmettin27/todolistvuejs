@@ -75,9 +75,15 @@ export const store = new Vuex.Store({
     },
     destroyToken(state){
       state.token = null
+    },
+    clearTodes(state){
+      state.todos = []
     }
   },
   actions: {
+    clearTodes(context){
+      context.commit('clearTodos')
+    },
     register(context, data) {
       return new Promise((resolve, reject) => {
         axios.post('/register', {
@@ -94,7 +100,7 @@ export const store = new Vuex.Store({
       })
     },
     destroyToken(context){
-      axios.defaults.headers.common['Authorization'] = 'Bearer' + context.state.token
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
       if(context.getters.loggedIn){
         return new Promise((resolve,reject) => {
           axios.post('/logout')
@@ -132,7 +138,9 @@ export const store = new Vuex.Store({
         })
       })
     },
-    retrieveTodos(context){
+    retrieveTodos(context){ 
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+
       axios.get('/todos')
       .then(response => {
        context.commit('retrieveTodos',response.data)
